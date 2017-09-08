@@ -45,8 +45,11 @@ module.exports = function enhanceWithClickOutside(WrappedComponent) {
       key: 'handleClickOutside',
       value: function handleClickOutside(e) {
         var domNode = this.__domNode;
-        if ((!domNode || !domNode.contains(e.target)) && typeof this.__wrappedComponent.handleClickOutside === 'function') {
-          this.__wrappedComponent.handleClickOutside(e);
+        if (!domNode.contains) {
+          return; // hack, throwing an error without this
+        }
+        if ((!domNode || !domNode.contains(e.target)) && typeof this.__wrappedInstance.handleClickOutside === 'function') {
+          this.__wrappedInstance.handleClickOutside(e);
         }
       }
     }, {
@@ -60,7 +63,7 @@ module.exports = function enhanceWithClickOutside(WrappedComponent) {
 
         return React.createElement(WrappedComponent, _extends({}, rest, {
           ref: function ref(c) {
-            _this2.__wrappedComponent = c;
+            _this2.__wrappedInstance = c;
             _this2.__domNode = ReactDOM.findDOMNode(c);
             wrappedRef && wrappedRef(c);
           }
